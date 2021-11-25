@@ -1,0 +1,36 @@
+{
+  "name": "@eva/texture-compressor",
+  "version": "1.0.0",
+  "description": "compressed texture generation scheme for eva.js",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "bin": {
+    "eva-compress": "./bin/index.js"
+  },
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eva-engine/texture-compressor.git"
+  },
+  "author": "aspsnd <2546697613@qq.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eva-engine/texture-compressor/issues"
+  },
+  "homepage": "https://github.com/eva-engine/texture-compressor#readme",
+  "dependencies": {
+    "minimist": "^1.2.5",
+    "sharp": "^0.29.3"
+  },
+  "devDependencies": {
+    "@types/minimist": "^1.2.2",
+    "@types/node": "^16.11.10",
+    "@types/sharp": "^0.29.4",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.4.0",
+    "typescript": "^3.6.4"
+  }
+}
