@@ -8,8 +8,7 @@
     "eva-compress": "./bin/index.js"
   },
   "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "tsc"
+    "prebuild": "rimraf dist"
   },
   "repository": {
     "type": "git",
