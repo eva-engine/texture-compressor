@@ -1,6 +1,6 @@
 {
   "name": "@eva/texture-compressor",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "compressed texture generation scheme for eva.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
