@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "compressed texture generation scheme for eva.js",
   "main": "dist/index.js",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "bin": {
     "eva-compress": "./bin/index.js"
   },
