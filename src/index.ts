@@ -1,5 +1,6 @@
 import { existsSync } from "fs";
 import { mkdir, readdir, rm, stat } from "fs/promises";
+import { dirname } from "path";
 import { relative, resolve } from "path/posix";
 import type { CompressType, FormatType, LinkType } from "./define";
 import { compressWithCrunch } from "./tools/compressWithCrunch";
@@ -47,7 +48,7 @@ export async function pack<T extends CompressType>(option: SinglePackOptions<T>)
         if (!existsSync(cacheDir)) {
           await mkdir(cacheDir);
         }
-        const middleFilePath = `${cacheDir}/tex-cache-${Date.now()}.png`;
+        const middleFilePath = `${cacheDir}/tex-cache-${getFileName(option.input)}-${Math.random()}-${Date.now()}.png`;
         await preMultiAlpha(option.input, middleFilePath);
         const result = await compressWithCrunch({ ...option, input: middleFilePath } as unknown as Required<SinglePackOptions<'s3tc'>>);
         await rm(middleFilePath);
@@ -92,8 +93,13 @@ export async function packDir(path: string, options: PackDirOptions | ((path: st
   const files: string[] = [];
   const getterOptionsType = typeof options === 'function';
   const verbose = getterOptionsType ? true : options.verbose;
-  Object.assign(options, DefaultPackDirOptions, options);
+  const outDir = getterOptionsType ? path : (options.outDir ?? path);
+  Object.assign(options, DefaultPackDirOptions, { ...options });
   const deep = async (parentPath: string) => {
+    const targetPath = resolve(outDir, relative(path, parentPath));
+    if (!existsSync(targetPath)) {
+      await mkdir(targetPath);
+    }
     const fileOrDirs = await readdir(parentPath);
     const promises = [];
     for (const name of fileOrDirs) {
@@ -123,15 +129,13 @@ export async function packDir(path: string, options: PackDirOptions | ((path: st
     }
     console.log();
   }
-  const promises = [];
   for (const file of files) {
-    const configs = getterOptionsType ? options(relative(file, path)) : (() => {
-      const outDir = options.outDir || path;
+    const configs = getterOptionsType ? options(relative(path, file)) : (() => {
       const configs: SinglePackOptions<CompressType>[] = [];
       for (const item of options.types) {
         for (const [type, format] of Object.entries(item)) {
           const name = getFileName(file);
-          const output = resolve(relative(outDir, path), file, '../', `${name}.${format.toLowerCase()}.ktx`);
+          const output = resolve(outDir, relative(path, dirname(file)), `${name}.${format.toLowerCase()}.ktx`);
           configs.push({
             input: file,
             output: output,
@@ -149,41 +153,8 @@ export async function packDir(path: string, options: PackDirOptions | ((path: st
       }
       return configs;
     })();
-    promises.push((async () => {
-      for (const config of configs) {
-        console.log(1, config.output);
-        await pack(config);
-        console.log(2, config.output);
-      }
-    })())
-
+    for (const config of configs) {
+      await pack(config);
+    }
   }
-  return await Promise.allSettled(promises);
 }
-
-
-(async () => {
-  // await pack({
-  //   input: './test/cat.png',
-  //   output: './test/cat.dxt5.ktx',
-  //   type: 's3tc',
-  //   format: 'DXT5',
-  //   quality: 10,
-  //   premultiplyAlpha: true,
-  //   verbose: false
-  // });
-  await packDir('./test', {
-    types: [
-      {
-        'astc': 'ASTC_12x12',
-        's3tc': 'DXT1A'
-      },
-      {
-        's3tc': 'DXT5'
-      }
-    ],
-    filter: (path: string) => path.endsWith('cat.png'),
-    verbose: true,
-
-  });
-})();
