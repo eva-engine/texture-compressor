@@ -6,6 +6,7 @@ import type { CompressType, FormatType, LinkType } from "./define";
 import { compressWithCrunch } from "./tools/compressWithCrunch";
 import { compressWithPVRTexTool } from "./tools/compressWithPVRTexTool";
 import { getFileName, preMultiAlpha } from "./tools/util";
+export * from "./define";
 
 export const cacheDir = './.tex-cache';
 
@@ -18,7 +19,7 @@ export interface SinglePackOptions<T extends CompressType> extends LinkType<T> {
   quality?: number
   square?: boolean
   mipmap?: boolean
-  pot?: boolean
+  pot?: string
   verbose?: boolean
   flipY?: boolean
   premultiplyAlpha?: boolean
@@ -27,7 +28,7 @@ export const DefaultPackOption = {
   quality: 5,
   square: false,
   mipmap: false,
-  pot: false,
+  pot: 'no',
   verbose: true,
   flipY: false,
   premultiplyAlpha: false
@@ -35,8 +36,7 @@ export const DefaultPackOption = {
 
 export async function pack<T extends CompressType>(option: SinglePackOptions<T>) {
   option = Object.assign({}, DefaultPackOption, option);
-
-  option.output = option.output || resolve(option.input, './', `${getFileName(option.input)}.${option.format}.ktx`);
+  option.output = option.output || resolve(dirname(option.input), `${getFileName(option.input)}.${(option.format as string).toLowerCase()}.ktx`);
 
   switch (option.type) {
     case 'astc':
@@ -69,7 +69,7 @@ export interface PackDirOptions {
   quality?: number
   square?: boolean
   mipmap?: boolean
-  pot?: boolean
+  pot?: string
   verbose?: boolean
   flipY?: boolean
   premultiplyAlpha?: boolean
@@ -80,7 +80,7 @@ export const DefaultPackDirOptions = {
   quality: 5,
   square: false,
   mipmap: false,
-  pot: false,
+  pot: 'no',
   verbose: true,
   flipY: false,
   premultiplyAlpha: false,

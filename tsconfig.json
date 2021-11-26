@@ -13,7 +13,7 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "declarationDir": "types",
+    "declarationDir": "dist",
     "outDir": "dist",
     "typeRoots": [
       "node_modules/@types"
