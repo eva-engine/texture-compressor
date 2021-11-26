@@ -1,11 +1,10 @@
 import { existsSync } from "fs";
 import { mkdir, readdir, rm, stat } from "fs/promises";
-import { basename } from "path";
 import { relative, resolve } from "path/posix";
 import type { CompressType, FormatType, LinkType } from "./define";
 import { compressWithCrunch } from "./tools/compressWithCrunch";
 import { compressWithPVRTexTool } from "./tools/compressWithPVRTexTool";
-import { getFileExtension, getFileName, preMultiAlpha } from "./tools/util";
+import { getFileName, preMultiAlpha } from "./tools/util";
 
 export const cacheDir = './.tex-cache';
 
@@ -74,6 +73,7 @@ export interface PackDirOptions {
   flipY?: boolean
   premultiplyAlpha?: boolean
   filter?: (path: string) => boolean
+  deepVerbose?: boolean
 }
 export const DefaultPackDirOptions = {
   quality: 5,
@@ -82,7 +82,8 @@ export const DefaultPackDirOptions = {
   pot: false,
   verbose: true,
   flipY: false,
-  premultiplyAlpha: false
+  premultiplyAlpha: false,
+  deepVerbose: false
 }
 /**
  * 
@@ -91,6 +92,7 @@ export async function packDir(path: string, options: PackDirOptions | ((path: st
   const files: string[] = [];
   const getterOptionsType = typeof options === 'function';
   const verbose = getterOptionsType ? true : options.verbose;
+  Object.assign(options, DefaultPackDirOptions, options);
   const deep = async (parentPath: string) => {
     const fileOrDirs = await readdir(parentPath);
     const promises = [];
@@ -135,23 +137,26 @@ export async function packDir(path: string, options: PackDirOptions | ((path: st
             output: output,
             type: type as CompressType,
             format: format as never,
-            quality: options.quality ?? DefaultPackOption.quality,
-            square: options.square ?? DefaultPackOption.square,
-            mipmap: options.mipmap ?? DefaultPackOption.mipmap,
-            pot: options.pot ?? DefaultPackOption.pot,
-            verbose: options.verbose ?? DefaultPackOption.verbose,
-            flipY: options.flipY ?? DefaultPackOption.flipY,
-            premultiplyAlpha: options.premultiplyAlpha ?? DefaultPackOption.premultiplyAlpha
+            quality: options.quality,
+            square: options.square,
+            mipmap: options.mipmap,
+            pot: options.pot,
+            verbose: options.deepVerbose,
+            flipY: options.flipY,
+            premultiplyAlpha: options.premultiplyAlpha
           })
         }
       }
       return configs;
     })();
-    for (const config of configs) {
-      promises.push((async () => {
+    promises.push((async () => {
+      for (const config of configs) {
+        console.log(1, config.output);
         await pack(config);
-      })())
-    }
+        console.log(2, config.output);
+      }
+    })())
+
   }
   return await Promise.allSettled(promises);
 }
@@ -177,6 +182,8 @@ export async function packDir(path: string, options: PackDirOptions | ((path: st
         's3tc': 'DXT5'
       }
     ],
-    filter: (path: string) => path.endsWith('.png')
+    filter: (path: string) => path.endsWith('cat.png'),
+    verbose: true,
+
   });
 })();

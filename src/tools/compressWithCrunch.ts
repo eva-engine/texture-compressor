@@ -1,5 +1,5 @@
 import { cpus } from 'os';
-import { SinglePackOptions } from '..';
+import { SinglePackOptions } from '../index';
 import { QualityDefine } from '../define';
 
 
