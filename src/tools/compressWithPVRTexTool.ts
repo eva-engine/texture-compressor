@@ -1,15 +1,17 @@
-// Compressors
 import { spawnProcess } from './spawnProcess';
 
 
-// Utilities
-import { getImageInfo, getMipChainLevels } from './image';
+import { getImageInfo, getMipChainLevels } from './util';
 import { SinglePackOptions } from '..';
+import { QualityDefine } from '../define';
 
 /**
  * Compress texture with the ASTC, ETC or PVRTC compression format
  */
-export const compressWithPVRTexTool = async (args: SinglePackOptions<'astc' | 'etc' | 'pvrtc'>): Promise<any> => {
+export const compressWithPVRTexTool = async (args: Required<SinglePackOptions<'astc' | 'etc' | 'pvrtc'>>) => {
+
+  const targetQuality = QualityDefine[args.type];
+  const quality = targetQuality[Math.round(args.quality! * .1 * (targetQuality.length - 1))];
 
   const flagMapping = [
     '-i',
@@ -19,8 +21,12 @@ export const compressWithPVRTexTool = async (args: SinglePackOptions<'astc' | 'e
     '-f',
     `${args.format}`,
     `-q`,
-    `${args.quality}`,
+    `${quality}`,
   ];
+
+  if(args.premultiplyAlpha){
+    flagMapping.push('-p');
+  }
 
   if (args.square) {
     flagMapping.push('-square', '+');

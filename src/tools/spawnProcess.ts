@@ -3,7 +3,7 @@ import { spawn } from 'child_process';
 import { platform } from 'os';
 import { join } from 'path';
 
-export const getBinaryDirectory = (): string => join(__dirname, '../../../bin/', platform());
+export const getBinaryDirectory = (): string => join(__dirname, '../../bin/', platform());
 
 /**
  * Spawn a child process of a texture compression tool (e.g. PVRTexTool, Crunch)

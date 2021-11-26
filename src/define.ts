@@ -55,3 +55,22 @@ export interface LinkType<T extends CompressType> {
   format: keyof FormatType[T]
 }
 export type FormatType = typeof FormatType;
+
+export const QualityDefine = {
+  astc: [
+    'astcveryfast',
+    'astcfast',
+    'astcmedium',
+    'astcthorough',
+    'astcexhaustive',
+  ],
+  etc: ['etcfast', 'etcslow', 'etcfastperceptual', 'etcslowperceptual'],
+  pvrtc: [
+    'pvrtcfastest',
+    'pvrtcfast',
+    'pvrtcnormal',
+    'pvrtchigh',
+    'pvrtcbest',
+  ],
+  s3tc: ['superfast', 'fast', 'normal', 'better', 'uber']
+} as const

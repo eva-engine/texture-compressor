@@ -1,4 +1,4 @@
-import { parse } from "path";
+import { basename, parse } from "path";
 import sharp from "sharp";
 
 export const getImageInfo = async (path: string) => await (await sharp(path).toBuffer({ resolveWithObject: true })).info;
@@ -18,11 +18,16 @@ export const preMultiAlpha = async (input: string, output: string) => {
       data[i + 2] = data[i + 2] * alpha;
     };
   }
-  return await sharp(data, {
+  return await sharp(new Uint8Array(data), {
     raw: {
       width: info.width,
       height: info.height,
       channels: info.channels
     }
+  }).png({
+    compressionLevel: 0
   }).toFile(output);
 }
+
+export const getFileName = (filepath: string): string =>
+  basename(filepath, getFileExtension(filepath));
