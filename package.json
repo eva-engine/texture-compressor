@@ -8,7 +8,7 @@
     "eva-compress": "./bin/index.js"
   },
   "scripts": {
-    "prebuild": "rimraf dist"
+    "clean": "rimraf dist"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,9 @@
   "dependencies": {
     "minimist": "^1.2.5",
     "sharp": "^0.29.3"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@types/minimist": "^1.2.2",

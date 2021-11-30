@@ -10,7 +10,7 @@ export * from "./define";
 
 export const cacheDir = './.tex-cache';
 
-export interface SinglePackOptions<T extends CompressType> extends LinkType<T> {
+export type SinglePackOptions<T extends CompressType> = LinkType<T> & {
   input: string
   output?: string
   /**
@@ -19,7 +19,7 @@ export interface SinglePackOptions<T extends CompressType> extends LinkType<T> {
   quality?: number
   square?: boolean
   mipmap?: boolean
-  pot?: string
+  pot?: boolean
   verbose?: boolean
   flipY?: boolean
   premultiplyAlpha?: boolean
@@ -28,7 +28,7 @@ export const DefaultPackOption = {
   quality: 5,
   square: false,
   mipmap: false,
-  pot: 'no',
+  pot: false,
   verbose: true,
   flipY: false,
   premultiplyAlpha: false
@@ -57,7 +57,7 @@ export async function pack<T extends CompressType>(option: SinglePackOptions<T>)
         return await compressWithCrunch(option as unknown as Required<SinglePackOptions<'s3tc'>>);
       }
     default:
-      throw new Error(`Compression type: ${option.type} was not valid`);
+      throw new Error(`Compression type: ${(option as { type: string }).type} was not valid`);
   }
 }
 
@@ -69,7 +69,7 @@ export interface PackDirOptions {
   quality?: number
   square?: boolean
   mipmap?: boolean
-  pot?: string
+  pot?: boolean
   verbose?: boolean
   flipY?: boolean
   premultiplyAlpha?: boolean
@@ -80,7 +80,7 @@ export const DefaultPackDirOptions = {
   quality: 5,
   square: false,
   mipmap: false,
-  pot: 'no',
+  pot: false,
   verbose: true,
   flipY: false,
   premultiplyAlpha: false,

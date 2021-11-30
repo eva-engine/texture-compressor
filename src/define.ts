@@ -5,6 +5,7 @@ export const CompressType = {
   etc: 'etc',
   s3tc: 's3tc'
 }
+export type CompressTypeTuple = ['astc', 'pvrtc', 'etc', 's3tc'];
 export const FormatType = {
   astc: {
     ASTC_4x4: 'ASTC_4x4',
@@ -50,10 +51,28 @@ export const FormatType = {
     DXT5: 'DXT5'
   }
 } as const;
-export interface LinkType<T extends CompressType> {
-  type: T
-  format: keyof FormatType[T]
+type ASTCLick = {
+  type: 'astc',
+  format: keyof FormatType['astc']
 }
+type ETCLink = {
+  type: 'etc',
+  format: keyof FormatType['etc']
+}
+type PVRTCLink = {
+  type: 'pvrtc',
+  format: keyof FormatType['pvrtc']
+}
+type S3TCLink = {
+  type: 's3tc',
+  format: keyof FormatType['s3tc']
+}
+export type LinkType<T extends CompressType = CompressType> =
+  ('astc' extends T ? ASTCLick : never) |
+  ('etc' extends T ? ETCLink : never) |
+  ('pvrtc' extends T ? PVRTCLink : never) |
+  ('s3tc' extends T ? S3TCLink : never);
+
 export type FormatType = typeof FormatType;
 
 export const QualityDefine = {

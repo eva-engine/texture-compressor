@@ -3,6 +3,7 @@
 const { stat } = require("fs/promises");
 const minimist = require("minimist");
 const { pack, packDir, FormatType } = require('../dist');
+const helper = require("./help");
 
 const args = minimist(process.argv.slice(2));
 
@@ -14,8 +15,14 @@ const flipY = !!(args.y || args.flipY);
 const square = args.square;
 const pot = !!args.pot;
 const preMultiplyAlpha = !!args.p;
+const needHelp = !!(args.h || args.help);
 
-const types = args.t?.split(',') ?? ['astc', 'etc', 'pvrtc', 's3tc'];
+if(needHelp){
+  console.log(helper.toHelpString());
+  process.exit(0);
+}
+
+const types = (args.t ?? args.types)?.split(',') ?? ['astc', 'etc', 'pvrtc', 's3tc'];
 
 const map = {
   astc: FormatType.astc.ASTC_4x4,

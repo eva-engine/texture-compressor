@@ -24,7 +24,7 @@ export const compressWithPVRTexTool = async (args: Required<SinglePackOptions<'a
     `${quality}`,
   ];
 
-  if(args.premultiplyAlpha){
+  if (args.premultiplyAlpha) {
     flagMapping.push('-p');
   }
 
@@ -32,8 +32,8 @@ export const compressWithPVRTexTool = async (args: Required<SinglePackOptions<'a
     flagMapping.push('-square', '+');
   }
 
-  if (args.pot !== 'no') {
-    flagMapping.push('-pot', args.pot || '+');
+  if (args.pot) {
+    flagMapping.push('-pot', '+');
   }
 
   if (args.mipmap) {
