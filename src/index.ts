@@ -63,8 +63,8 @@ export async function pack<T extends CompressType>(option: SinglePackOptions<T>)
 
 export interface PackDirOptions {
   types: {
-    [key in CompressType]?: keyof FormatType[key]
-  }[]
+    [key in CompressType]?: (keyof FormatType[key])[] | (keyof FormatType[key])
+  }
   outDir?: string
   quality?: number
   square?: boolean
@@ -132,8 +132,8 @@ export async function packDir(path: string, options: PackDirOptions | ((path: st
   for (const file of files) {
     const configs = getterOptionsType ? options(relative(path, file)) : (() => {
       const configs: SinglePackOptions<CompressType>[] = [];
-      for (const item of options.types) {
-        for (const [type, format] of Object.entries(item)) {
+      for (const [type, formats] of Object.entries(options.types)) {
+        for (const format of typeof formats === 'string' ? [formats] : formats) {
           const name = getFileName(file);
           const output = resolve(outDir, relative(path, dirname(file)), `${name}.${format.toLowerCase()}.ktx`);
           configs.push({

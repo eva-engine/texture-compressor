@@ -17,7 +17,7 @@ const pot = !!args.pot;
 const preMultiplyAlpha = !!args.p;
 const needHelp = !!(args.h || args.help);
 
-if(needHelp){
+if (needHelp) {
   console.log(helper.toHelpString());
   process.exit(0);
 }
@@ -45,7 +45,7 @@ async function generate(target) {
     }
     packDir(target, {
       outDir: output,
-      types: [typeObj],
+      types: typeObj,
       quality,
       mipmap,
       flipY,
